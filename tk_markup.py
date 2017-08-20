@@ -9,10 +9,14 @@ def create_element(root, parent=None):
     if root.name is None:
         return
 
-    yield (root.name, parent)
+    name = root.name
+    attrs = root.attrs
+
+    # TODO: Actually create the elements.
+    print(name, attrs, parent and parent.name)
 
     for child in getattr(root, "children", ()):
-        yield from create_element(child, root)
+        create_element(child, root)
 
 
 def main():
@@ -27,8 +31,7 @@ def main():
         soup = bs4.BeautifulSoup(xml_file.read(), "xml")
 
     root = create_element(soup.find("Tk"))
-
-    pprint.pprint(list(root))
+    pprint.pprint(root)
 
 
 if __name__ == "__main__":
