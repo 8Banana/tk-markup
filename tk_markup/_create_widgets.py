@@ -8,10 +8,8 @@ def _pairs(sequence):
 
 
 def _to_dict(any_widget, string):
-    if not isinstance(any_widget, tk.Tk):
-        any_widget = any_widget.tk
-
-    return {k.lstrip("-"): v for k, v in _pairs(any_widget.splitlist(string))}
+    return {k.lstrip("-"): v
+            for k, v in _pairs(any_widget.tk.splitlist(string))}
 
 
 def create_widget(widget_type, attributes, parent_widget=None):
