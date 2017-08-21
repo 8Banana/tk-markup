@@ -7,29 +7,29 @@ def _pairs(sequence):
     return zip(sequence[0::2], sequence[1::2])
 
 
-def _to_dict(string, any_widget):
-    return dict(_pairs(any_widget.tk.splitlist(string)))
+def _to_dict(any_widget, string):
+    if not isinstance(any_widget, tk.Tk):
+        any_widget = any_widget.tk
+
+    return {k.lstrip("-"): v for k, v in _pairs(any_widget.splitlist(string))}
 
 
-# all of these can be None, except class_name
-def create_widget(parent_widget, class_name, pack_opts, grid_opts,
-                  place_opts, config_opts):
-    cls = getattr(tk, class_name):
-    # TODO: validate cls?
+def create_widget(widget_type, attributes, parent_widget=None):
+    cls = getattr(tk, widget_type)
 
-    if parent_widget is None:
-        # probably Tk
-        widget = cls()
-        widget.config(**_to_dict(widget, config_opts))
+    widget = cls(parent_widget)
+
+    for showing_option in ("pack", "grid", "place"):
+        if showing_option in attributes:
+            method = getattr(widget, showing_option)
+            kwargs = _to_dict(widget, attributes.pop(showing_option))
+            method(**kwargs)
+            break
     else:
-        widget = cls(parent_widget, **_to_dict(parent_widget, config))
+        # TODO: Are there situations in which you don't want to show a widget?
+        if widget_type != "Tk":
+            raise RuntimeError(repr(widget) + " is not being displayed!")
 
-    # tkinter raises an error if more than one of these is specified
-    if pack_opts is not None:
-        widget.pack(**_to_dict(widget, pack_opts))
-    if grid_opts is not None:
-        widget.grid(**_to_dict(widget, grid_opts))
-    if place_opts is not None:
-        widget.place(**_to_dict(widget, place_opts)
+    widget.config(**attributes)
 
     return widget

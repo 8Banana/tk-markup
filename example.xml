@@ -2,7 +2,7 @@
 <Tk>
     <Text pack="-side left"/>
     <Frame pack="-anchor n">
-        <Button text="Save..." pack/>
-        <Button text="Load..." pack/>
+        <Button text="Save..." pack="" />
+        <Button text="Load..." pack="" />
     </Frame>
 </Tk>

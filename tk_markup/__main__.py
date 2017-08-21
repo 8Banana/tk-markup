@@ -1,22 +1,22 @@
 #!/usr/bin/env python3
 import argparse
-import pprint
 
 import bs4
+
+from ._create_widgets import create_widget
 
 
 def create_element(root, parent=None):
     if root.name is None:
         return
 
-    name = root.name
-    attrs = root.attrs
-
-    # TODO: Actually create the elements.
-    print(name, attrs, parent and parent.name)
+    widget = create_widget(root.name, root.attrs, parent)
+    children = []
 
     for child in getattr(root, "children", ()):
-        create_element(child, root)
+        children.append(create_element(child, widget))
+
+    return (widget, children)
 
 
 def main():
@@ -31,7 +31,7 @@ def main():
         soup = bs4.BeautifulSoup(xml_file.read(), "xml")
 
     root = create_element(soup.find("Tk"))
-    pprint.pprint(root)
+    root[0].mainloop()
 
 
 if __name__ == "__main__":
