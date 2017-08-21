@@ -24,9 +24,15 @@ def create_widget(widget_type, attributes, parent_widget=None):
             method(**kwargs)
             break
     else:
-        # TODO: Are there situations in which you don't want to show a widget?
-        if widget_type != "Tk":
-            raise RuntimeError(repr(widget) + " is not being displayed!")
+        # TODO: Add an option for creating widgets without showing them.
+        #       This is not needed most of the time, but some things
+        #       like Porcupine's tab manager do it.
+        # TODO: Don't break if someone creates a custom class called
+        #       Toplevel or a MyToplevel class that inherits from
+        #       Toplevel.
+        if widget_type not in {"Tk", "Toplevel"}:
+            raise RuntimeError(repr(widget) + " isn't packed, gridded "
+                               "or placed")
 
     widget.config(**attributes)
 
