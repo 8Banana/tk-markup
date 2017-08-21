@@ -12,15 +12,15 @@ def _to_dict(any_widget, string):
             for k, v in _pairs(any_widget.tk.splitlist(string))}
 
 
-def create_widget(widget_type, attributes, parent_widget=None):
+def create_widget(widget_type, options, parent_widget=None):
     cls = getattr(tk, widget_type)
 
     widget = cls(parent_widget)
 
-    for showing_option in ("pack", "grid", "place"):
-        if showing_option in attributes:
-            method = getattr(widget, showing_option)
-            kwargs = _to_dict(widget, attributes.pop(showing_option))
+    for geometry_manager in ("pack", "grid", "place"):
+        if geometry_manager in options:
+            method = getattr(widget, geometry_manager)
+            kwargs = _to_dict(widget, options.pop(geometry_manager))
             method(**kwargs)
             break
     else:
@@ -34,6 +34,6 @@ def create_widget(widget_type, attributes, parent_widget=None):
             raise RuntimeError(repr(widget) + " isn't packed, gridded "
                                "or placed")
 
-    widget.config(**attributes)
+    widget.config(**options)
 
     return widget
